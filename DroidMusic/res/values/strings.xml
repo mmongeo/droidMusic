@@ -4,5 +4,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_splash">Splash</string>
+    <string name="droidMusic">Droid Music</string>
+    <string name="iniciando">Iniciando, por favor espere... </string>
+    <string name="title_activity_lista_canciones">ListaCancionesActivity</string>
 
 </resources>
