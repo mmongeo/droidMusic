@@ -1,7 +1,8 @@
-package ac.cr.ecci.ucr.DroidMusic;
+package ac.cr.ecci.ucr.droidmusic.ui;
 
-import android.os.Bundle;
+import ac.cr.ecci.ucr.droidmusic.R;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 
 public class Splash extends Activity {
