@@ -14,16 +14,22 @@ public final class R {
         public static final int headphones=0x7f020000;
         public static final int ic_action_search=0x7f020001;
         public static final int ic_launcher=0x7f020002;
-        public static final int play=0x7f020003;
+        public static final int lupa=0x7f020003;
+        public static final int play=0x7f020004;
     }
     public static final class id {
-        public static final int item_Artista=0x7f070005;
-        public static final int item_Cancion=0x7f070004;
-        public static final int item_audifono=0x7f070003;
-        public static final int item_play=0x7f070002;
-        public static final int menu_settings=0x7f070006;
-        public static final int textView1=0x7f070000;
-        public static final int textView2=0x7f070001;
+        public static final int RelativeLayout1=0x7f070000;
+        public static final int boton_buscar=0x7f070002;
+        public static final int item_Artista=0x7f070009;
+        public static final int item_Cancion=0x7f070008;
+        public static final int item_audifono=0x7f070007;
+        public static final int item_estrella=0x7f07000a;
+        public static final int item_play=0x7f070006;
+        public static final int layout_ListaCanciones=0x7f070003;
+        public static final int menu_settings=0x7f07000b;
+        public static final int texto_busqueda=0x7f070001;
+        public static final int texto_centro=0x7f070004;
+        public static final int texto_espere=0x7f070005;
     }
     public static final class layout {
         public static final int activity_lista_canciones=0x7f030000;
