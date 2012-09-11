@@ -7,5 +7,7 @@
     <string name="droidMusic">Droid Music</string>
     <string name="iniciando">Iniciando, por favor espere... </string>
     <string name="title_activity_lista_canciones">ListaCancionesActivity</string>
+    <string name="Nada">No hay datos que desplegar.</string>
+    <string name="mas">Ver mas resultados</string>
 
 </resources>

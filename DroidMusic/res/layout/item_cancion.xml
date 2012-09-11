@@ -10,7 +10,7 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="75dp"
 	    android:background="#000000" >
-	    <ImageView 
+	    <ImageButton 
 	        android:id="@+id/item_play"
 	        android:layout_centerVertical="true"
 	        android:src="@drawable/play"
@@ -20,7 +20,7 @@
 	       	android:background="#1F1F1F"
 	       	
 	       	/>
-	    <ImageButton 
+	    <ImageView 
 	        android:id="@+id/item_audifono"
 	        android:layout_centerVertical="true"
 	        android:layout_toRightOf="@id/item_play"
