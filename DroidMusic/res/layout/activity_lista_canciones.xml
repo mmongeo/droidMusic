@@ -14,7 +14,8 @@
       	android:layout_margin="3dp"
       	android:layout_marginTop="10dp" 
       	android:textColor="#0000F3" 
-        android:ems="12" >
+        android:ems="12" 
+        android:hint="@string/hint_busqueda">
 
     </EditText>
     <ImageButton

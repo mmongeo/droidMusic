@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -26,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 public class ListaCancionesActivity extends Activity {
 
@@ -39,6 +41,17 @@ public class ListaCancionesActivity extends Activity {
         setContentView(R.layout.activity_lista_canciones);
         mButtonBuscar = (ImageButton) findViewById(R.id.boton_buscar);
         mListCanciones = (ListView) findViewById(R.id.layout_ListaCanciones);
+        EditText textoBuscar = (EditText)findViewById(R.id.texto_busqueda);
+        textoBuscar.setOnEditorActionListener(new OnEditorActionListener(){
+           	@Override
+        	public boolean onEditorAction(TextView v, int actionId,
+        			KeyEvent event) {
+        		if(event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)){
+        			pressSearchButton();
+        		}
+        		return false;
+        	}        	
+        });
         
         mFooterView = ((LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.item_boton_mas, null, false);
         mListCanciones.addFooterView(mFooterView);
@@ -56,18 +69,7 @@ public class ListaCancionesActivity extends Activity {
         mButtonBuscar.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-		        mFooterView.setVisibility(View.VISIBLE);
-				MusicAdapter adapter = (MusicAdapter) ((HeaderViewListAdapter) mListCanciones.getAdapter()).getWrappedAdapter();
-				adapter.clear();
-				TaskSongs task = new TaskSongs();
-				task.setFirst(true); //es el primer pedido de busqueda
-				if(((EditText)findViewById(R.id.texto_busqueda)).getText().toString().contentEquals("")){ //si no tiene nada no devuelve resultados
-					task.setEmpty(true);
-				}
-				else{
-					task.setEmpty(false);
-				}
-				task.execute();
+		        pressSearchButton();
 			}
 		});
         mButtonVerMas.setOnClickListener( new View.OnClickListener() {
@@ -78,6 +80,21 @@ public class ListaCancionesActivity extends Activity {
 				task.execute();
 			}
 		});
+    }
+    
+    private void pressSearchButton(){
+    	mFooterView.setVisibility(View.VISIBLE);
+		MusicAdapter adapter = (MusicAdapter) ((HeaderViewListAdapter) mListCanciones.getAdapter()).getWrappedAdapter();
+		adapter.clear();
+		TaskSongs task = new TaskSongs();
+		task.setFirst(true); //es el primer pedido de busqueda
+		if(((EditText)findViewById(R.id.texto_busqueda)).getText().toString().contentEquals("")){ //si no tiene nada no devuelve resultados
+			task.setEmpty(true);
+		}
+		else{
+			task.setEmpty(false);
+		}
+		task.execute();
     }
     
     @Override
