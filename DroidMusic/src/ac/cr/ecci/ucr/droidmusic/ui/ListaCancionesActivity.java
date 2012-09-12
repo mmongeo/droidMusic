@@ -12,10 +12,8 @@ import ac.cr.ecci.ucr.droidmusic.service.SimpleDroidMusicService;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -23,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -31,21 +30,38 @@ import android.widget.TextView;
 public class ListaCancionesActivity extends Activity {
 
 	ListView mListCanciones;
-	ImageButton mButton;
+	ImageButton mButtonBuscar;
+	Button mButtonVerMas;
+	View mFooterView;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_canciones);
-        mButton = (ImageButton) findViewById(R.id.boton_buscar);
+        mButtonBuscar = (ImageButton) findViewById(R.id.boton_buscar);
         mListCanciones = (ListView) findViewById(R.id.layout_ListaCanciones);
-        mListCanciones.setAdapter(new MusicAdapter(this,new ArrayList<Song>()));
         
-        mButton.setOnClickListener(new View.OnClickListener() {
-			
+        mFooterView = ((LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.item_boton_mas, null, false);
+        mListCanciones.addFooterView(mFooterView);
+        mButtonVerMas = (Button) findViewById(R.id.boton_mas);
+        mFooterView.setVisibility(View.INVISIBLE);
+        /*
+        TextView noHayNada = new TextView(this); // no me esta sirviendo...
+        noHayNada.setTextSize(60); 
+        noHayNada.setTextColor(Color.WHITE);
+        noHayNada.setText("No hay resultados que mostrar");
+        mListCanciones.setEmptyView(noHayNada); // no me esta sirviendo...
+        */
+        
+        mListCanciones.setAdapter(new MusicAdapter(this,new ArrayList<Song>()));
+        mButtonBuscar.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+		        mFooterView.setVisibility(View.VISIBLE);
+				MusicAdapter adapter = (MusicAdapter) ((HeaderViewListAdapter) mListCanciones.getAdapter()).getWrappedAdapter();
+				adapter.clear();
 				TaskSongs task = new TaskSongs();
-				if(((EditText)findViewById(R.id.texto_busqueda)).getText().toString().contentEquals("")){
+				task.setFirst(true); //es el primer pedido de busqueda
+				if(((EditText)findViewById(R.id.texto_busqueda)).getText().toString().contentEquals("")){ //si no tiene nada no devuelve resultados
 					task.setEmpty(true);
 				}
 				else{
@@ -53,9 +69,16 @@ public class ListaCancionesActivity extends Activity {
 				}
 				task.execute();
 			}
-		});         
+		});
+        mButtonVerMas.setOnClickListener( new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				TaskSongs task = new TaskSongs();
+				task.setFirst(false);
+				task.execute();
+			}
+		});
     }
-    
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -74,6 +97,11 @@ public class ListaCancionesActivity extends Activity {
 
 		public void addList(List<Song> songs) {
 			this.songs.addAll(songs);
+			notifyDataSetChanged();
+		}
+		
+		public void clear(){
+			this.songs.clear();
 			notifyDataSetChanged();
 		}
 
@@ -121,19 +149,20 @@ public class ListaCancionesActivity extends Activity {
 	}
 	
 	 class TaskSongs extends AsyncTask<Void, Void, List<Song>> {
-		boolean empty = false;
+		boolean empty = false; //para que no devuelva ningun resultado
+		boolean first = true; //para que haga la primer busqueda
 		ProgressDialog progress;
-	
-		public boolean isEmpty() {
-			return empty;
-		}
-
+		boolean finish= false;
+		
 		public void setEmpty(boolean empty) {
 			this.empty = empty;
 		}
 		
 		
-
+		public void setFirst(boolean first) {
+			this.first = first;
+		}
+		
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -142,26 +171,40 @@ public class ListaCancionesActivity extends Activity {
 
 		@Override
 		protected List<Song> doInBackground(Void... params) {
-			List<Song> songs = new ArrayList<Song>();
+			List<Song> songs = new ArrayList<Song>();			
 			if(empty == false){
 				SimpleDroidMusicService service = (SimpleDroidMusicService) DroidMusicServiceFactory.getInstance();
-				
+				if(first){
+					service.setCurrent(0);					
+				}
 				try {
 					songs = service.getSongs(10);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				finish = service.isFinished();
+			}
+			else{
+				finish = true;				
 			}
 			return songs;
 		}
 
 		@Override
 		protected void onPostExecute(List<Song> result) {
-			
-			MusicAdapter adapter = (MusicAdapter) mListCanciones.getAdapter();
+			MusicAdapter adapter = (MusicAdapter) ((HeaderViewListAdapter) mListCanciones.getAdapter()).getWrappedAdapter();
 			adapter.addList(result);
 			progress.dismiss();
+			if(finish){
+				mButtonVerMas.setEnabled(false);	
+				mButtonVerMas.setText("No hay mas resultados");
+			}
+			else{
+				mButtonVerMas.setEnabled(true);
+				mButtonVerMas.setText("Ver mas resultados"); //podria ser mas especifico para el caso que no hay reusltados
+			}
+			mButtonVerMas.setVisibility(View.VISIBLE);
 		}
 	};
     
