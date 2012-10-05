@@ -1,5 +1,6 @@
 package ac.cr.ecci.ucr.droidmusic.ui;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +13,10 @@ import ac.cr.ecci.ucr.droidmusic.service.SimpleDroidMusicService;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,13 +34,24 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class ListaCancionesActivity extends Activity {
 
-	ListView mListCanciones;
+	static ListView mListCanciones;
 	ImageButton mButtonBuscar;
-	Button mButtonVerMas;
+	static Button mButtonVerMas;
 	View mFooterView;
+	TaskSongs task;
+	public static final int PROGRESS_DIALOG = 1;
+	
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+       
+        Object obj = getLastNonConfigurationInstance();       
+        if (obj != null && obj instanceof TaskSongs) {
+            task = (TaskSongs) obj;
+            task.attach(this);
+        }
+        
         setContentView(R.layout.activity_lista_canciones);
         mButtonBuscar = (ImageButton) findViewById(R.id.boton_buscar);
         mListCanciones = (ListView) findViewById(R.id.layout_ListaCanciones);
@@ -75,18 +89,43 @@ public class ListaCancionesActivity extends Activity {
         mButtonVerMas.setOnClickListener( new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				TaskSongs task = new TaskSongs();
+				task = new TaskSongs(getParent());
 				task.setFirst(false);
 				task.execute();
 			}
 		});
     }
     
+    @Override
+    protected Dialog onCreateDialog(int id) {
+ 
+        switch (id) {
+        case PROGRESS_DIALOG:
+            ProgressDialog pd = new ProgressDialog(this);
+            pd.setTitle("Trabajando");
+            pd.setMessage("Por favor espere...");
+            return pd;
+ 
+        default:
+            break;
+        }
+        return super.onCreateDialog(id);
+    }
+    
+    public Object onRetainNonConfigurationInstance() {
+        // Aqui es donde se hace la magia
+        if (task != null) {
+            task.deattach();
+            return task;
+        }
+        return super.onRetainNonConfigurationInstance();
+    }
+    
     private void pressSearchButton(){
     	mFooterView.setVisibility(View.VISIBLE);
 		MusicAdapter adapter = (MusicAdapter) ((HeaderViewListAdapter) mListCanciones.getAdapter()).getWrappedAdapter();
 		adapter.clear();
-		TaskSongs task = new TaskSongs();
+		task = new TaskSongs(this);
 		task.setFirst(true); //es el primer pedido de busqueda
 		if(((EditText)findViewById(R.id.texto_busqueda)).getText().toString().contentEquals("")){ //si no tiene nada no devuelve resultados
 			task.setEmpty(true);
@@ -165,11 +204,17 @@ public class ListaCancionesActivity extends Activity {
 		public ImageView photoThumbnail;
 	}
 	
-	 class TaskSongs extends AsyncTask<Void, Void, List<Song>> {
+	 private static class TaskSongs extends AsyncTask<Void, Void, List<Song>> {
 		boolean empty = false; //para que no devuelva ningun resultado
 		boolean first = true; //para que haga la primer busqueda
 		ProgressDialog progress;
 		boolean finish= false;
+		WeakReference ctx;
+		
+		public TaskSongs(Activity activity){
+			super();
+			attach(activity);
+		}
 		
 		public void setEmpty(boolean empty) {
 			this.empty = empty;
@@ -183,12 +228,16 @@ public class ListaCancionesActivity extends Activity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			progress = ProgressDialog.show(ListaCancionesActivity.this, "Espere", "Buscando canciones...");
+			Activity activity = (Activity) ctx.get();
+			if(activity != null && !activity.isFinishing()){
+				//progress = ProgressDialog.show(activity, "Espere", "Buscando canciones...");
+				activity.showDialog(PROGRESS_DIALOG);
+			}
 		}
 
-		@Override
-		protected List<Song> doInBackground(Void... params) {
-			List<Song> songs = new ArrayList<Song>();			
+		protected List<Song> doInBackground(Void ... params) {
+			List<Song> songs = new ArrayList<Song>();		
+			
 			if(empty == false){
 				SimpleDroidMusicService service = (SimpleDroidMusicService) DroidMusicServiceFactory.getInstance();
 				if(first){
@@ -210,19 +259,29 @@ public class ListaCancionesActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(List<Song> result) {
-			MusicAdapter adapter = (MusicAdapter) ((HeaderViewListAdapter) mListCanciones.getAdapter()).getWrappedAdapter();
-			adapter.addList(result);
-			progress.dismiss();
-			if(finish){
-				mButtonVerMas.setEnabled(false);	
-				mButtonVerMas.setText("No hay mas resultados");
+			if(ctx!=null && ctx.get() != null){
+				MusicAdapter adapter = (MusicAdapter) ((HeaderViewListAdapter) mListCanciones.getAdapter()).getWrappedAdapter();
+				adapter.addList(result);
+				Activity activity = (Activity) ctx.get();
+				activity.dismissDialog(PROGRESS_DIALOG);
+				if(finish){
+					mButtonVerMas.setEnabled(false);	
+					mButtonVerMas.setText("No hay mas resultados");
+				}
+				else{
+					mButtonVerMas.setEnabled(true);
+					mButtonVerMas.setText("Ver mas resultados"); //podrmButtonVerMasia ser mas especifico para el caso que no hay reusltados
+				}
+				mButtonVerMas.setVisibility(View.VISIBLE);
 			}
-			else{
-				mButtonVerMas.setEnabled(true);
-				mButtonVerMas.setText("Ver mas resultados"); //podria ser mas especifico para el caso que no hay reusltados
-			}
-			mButtonVerMas.setVisibility(View.VISIBLE);
 		}
+		
+        public void attach(Activity activity) {
+            this.ctx = new WeakReference(activity);
+        }
+        public void deattach(){
+    		this.ctx = null;	
+        }
 	};
     
 }
