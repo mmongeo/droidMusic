@@ -1,7 +1,7 @@
-package ac.cr.ecci.ucr.droidmusic.ui;
+package ac.cr.ecci.ucr.droidmusic.service;
 
-import ac.cr.ecci.ucr.droidmusic.service.DroidMusicService;
-import ac.cr.ecci.ucr.droidmusic.service.SimpleDroidMusicService;
+import ac.cr.ecci.ucr.droidmusic.ui.DroidMusicService;
+
 
 public class DroidMusicServiceFactory {
 	private static DroidMusicService service = null;

@@ -24,11 +24,10 @@
         <activity
             android:name=".ui.ListaCancionesActivity"
             android:label="@string/title_activity_lista_canciones" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.DashboardActivity"
+            android:label="@string/title_activity_dashboard" >
         </activity>
 
         <service

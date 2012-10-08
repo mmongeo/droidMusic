@@ -10,5 +10,6 @@
     <string name="Nada">No hay datos que desplegar.</string>
     <string name="mas">Ver mas resultados</string>
     <string name="hint_busqueda">Ingrese su valor de busqueda.</string>
+    <string name="title_activity_dashboard">Dashboard</string>
 
 </resources>

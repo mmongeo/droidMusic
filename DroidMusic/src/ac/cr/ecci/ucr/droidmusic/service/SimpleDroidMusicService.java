@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ac.cr.ecci.ucr.droidmusic.bo.Song;
+import ac.cr.ecci.ucr.droidmusic.ui.DroidMusicService;
 
 public class SimpleDroidMusicService extends DroidMusicService {
 	int max = 30; //numero maximo de canciones por consulta
