@@ -11,5 +11,8 @@
     <string name="mas">Ver mas resultados</string>
     <string name="hint_busqueda">Ingrese su valor de busqueda.</string>
     <string name="title_activity_dashboard">Dashboard</string>
+    <string name="title_activity_favoritos">Favoritos</string>
+    <string name="title_activity_generos">Generos</string>
+    <string name="title_activity_listas">Listas</string>
 
 </resources>

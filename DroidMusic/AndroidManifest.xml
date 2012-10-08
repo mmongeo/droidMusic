@@ -35,6 +35,28 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <activity
+            android:name=".ui.Favoritos"
+            android:label="@string/title_activity_favoritos" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ac.cr.ecci.ucr.droidmusic.ui.DashboardActivity" />
+        </activity>
+        <activity
+            android:name=".ui.Generos"
+            android:label="@string/title_activity_generos" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ac.cr.ecci.ucr.droidmusic.ui.DashboardActivity" />
+        </activity>
+        <activity
+            android:name=".ui.Listas"
+            android:label="@string/title_activity_listas" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ac.cr.ecci.ucr.droidmusic.ui.DashboardActivity" />
+        </activity>
     </application>
 
 </manifest>

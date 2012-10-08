@@ -85,15 +85,21 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int actionbar_compat=0x7f030000;
         public static final int actionbar_indeterminate_progress=0x7f030001;
         public static final int activity_dashboard=0x7f030002;
-        public static final int activity_lista_canciones=0x7f030003;
-        public static final int activity_splash=0x7f030004;
-        public static final int item_boton_mas=0x7f030005;
-        public static final int item_cancion=0x7f030006;
+        public static final int activity_favoritos=0x7f030003;
+        public static final int activity_generos=0x7f030004;
+        public static final int activity_lista_canciones=0x7f030005;
+        public static final int activity_listas=0x7f030006;
+        public static final int activity_splash=0x7f030007;
+        public static final int item_boton_mas=0x7f030008;
+        public static final int item_cancion=0x7f030009;
     }
     public static final class menu {
         public static final int activity_dashboard=0x7f0a0000;
-        public static final int activity_lista_canciones=0x7f0a0001;
-        public static final int activity_splash=0x7f0a0002;
+        public static final int activity_favoritos=0x7f0a0001;
+        public static final int activity_generos=0x7f0a0002;
+        public static final int activity_lista_canciones=0x7f0a0003;
+        public static final int activity_listas=0x7f0a0004;
+        public static final int activity_splash=0x7f0a0005;
     }
     public static final class string {
         public static final int Nada=0x7f080007;
@@ -105,7 +111,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int mas=0x7f080008;
         public static final int menu_settings=0x7f080002;
         public static final int title_activity_dashboard=0x7f08000a;
+        public static final int title_activity_favoritos=0x7f08000b;
+        public static final int title_activity_generos=0x7f08000c;
         public static final int title_activity_lista_canciones=0x7f080006;
+        public static final int title_activity_listas=0x7f08000d;
         public static final int title_activity_splash=0x7f080003;
     }
     public static final class style {
