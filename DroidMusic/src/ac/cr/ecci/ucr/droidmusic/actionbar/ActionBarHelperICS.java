@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ac.cr.ecci.droidmusic.actionbar;
+package ac.cr.ecci.ucr.droidmusic.actionbar;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,7 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 /**
- * An extension of {@link ac.cr.ecci.droidmusic.actionbar.ActionBarHelper} that provides Android
+ * An extension of {@link ac.cr.ecci.ucr.droidmusic.actionbar.ActionBarHelper} that provides Android
  * 4.0-specific functionality for IceCreamSandwich devices. It thus requires API level 14.
  */
 public class ActionBarHelperICS extends ActionBarHelperHoneycomb {

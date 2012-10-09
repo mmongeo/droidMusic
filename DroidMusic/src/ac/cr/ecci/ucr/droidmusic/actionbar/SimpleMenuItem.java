@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ac.cr.ecci.droidmusic.actionbar;
+package ac.cr.ecci.ucr.droidmusic.actionbar;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
