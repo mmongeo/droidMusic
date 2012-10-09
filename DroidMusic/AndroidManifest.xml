@@ -13,8 +13,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".ui.SplashActivity"
-            android:label="@string/title_activity_splash" >
+                        android:name=".ui.SplashActivity"
+            android:label="@string/droidMusic" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,11 +23,14 @@
         </activity>
         <activity
             android:name=".ui.ListaCancionesActivity"
-            android:label="@string/title_activity_lista_canciones" >
+            android:label="@string/droidMusic" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ac.cr.ecci.ucr.droidmusic.ui.DashboardActivity" />
         </activity>
         <activity
             android:name=".ui.DashboardActivity"
-            android:label="@string/title_activity_dashboard" >
+            android:label="@string/droidMusic" >
         </activity>
 
         <service
@@ -37,22 +40,22 @@
         </service>
 
         <activity
-            android:name=".ui.Favoritos"
-            android:label="@string/title_activity_favoritos" >
+            android:name=".ui.FavoritosActivity"
+            android:label="@string/droidMusic" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ac.cr.ecci.ucr.droidmusic.ui.DashboardActivity" />
         </activity>
         <activity
-            android:name=".ui.Generos"
-            android:label="@string/title_activity_generos" >
+            android:name=".ui.GenerosActivity"
+            android:label="@string/droidMusic" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ac.cr.ecci.ucr.droidmusic.ui.DashboardActivity" />
         </activity>
         <activity
-            android:name=".ui.Listas"
-            android:label="@string/title_activity_listas" >
+            android:name=".ui.ListasActivity"
+            android:label="@string/droidMusic" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ac.cr.ecci.ucr.droidmusic.ui.DashboardActivity" />

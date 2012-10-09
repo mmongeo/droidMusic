@@ -56,6 +56,9 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int lista=0x7f020006;
         public static final int lupa=0x7f020007;
         public static final int play=0x7f020008;
+        public static final int selectorbuttonfavorites=0x7f020009;
+        public static final int star_off=0x7f02000a;
+        public static final int star_on=0x7f02000b;
     }
     public static final class id {
         public static final int actionbar_compat=0x7f070000;

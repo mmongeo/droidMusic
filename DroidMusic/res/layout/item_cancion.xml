@@ -54,7 +54,8 @@
 	        android:textColor="#FFFFFF"
 	        android:textAppearance="?android:attr/textAppearanceSmall" />
 	    
-	    <ToggleButton 
+	    <ImageButton 
+	        android:src="@drawable/selectorbuttonfavorites"
 	        android:id="@+id/item_estrella"
 	        android:layout_alignParentRight="true"
 	       	android:layout_centerInParent="true"

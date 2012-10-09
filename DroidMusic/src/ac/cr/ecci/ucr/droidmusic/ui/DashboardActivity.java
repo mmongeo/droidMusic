@@ -7,27 +7,60 @@ import ac.cr.ecci.ucr.droidmusic.R.menu;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class DashboardActivity extends ActionBarActivity {
 
-	Button mButtonBuscar;
+	OnClickListener listener;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_dashboard);
-		mButtonBuscar = (Button) findViewById(R.id.boton_buscar);
-		mButtonBuscar.setOnClickListener(new OnClickListener() {
-
+		Button buttonAux = (Button) findViewById(R.id.boton_buscar);
+		buttonAux.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity( new Intent(getApplicationContext(), ListaCancionesActivity.class));
+				startActivity(new Intent(getApplicationContext(),
+						ListaCancionesActivity.class));
+
 			}
 		});
+		buttonAux = (Button) findViewById(R.id.boton_generos);
+		buttonAux.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Button button = (Button) v;
+				startActivity(new Intent(getApplicationContext(),
+						GenerosActivity.class));
+			}
+		});
+		buttonAux = (Button) findViewById(R.id.boton_listas);
+		buttonAux.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Button button = (Button) v;
+				startActivity(new Intent(getApplicationContext(),
+						ListasActivity.class));
+
+			}
+		});
+		buttonAux = (Button) findViewById(R.id.boton_favoritos);
+		buttonAux.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Button button = (Button) v;
+				startActivity(new Intent(getApplicationContext(),
+						GenerosActivity.class));
+
+			}
+		});
+
 	}
 
 	@Override

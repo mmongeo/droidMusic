@@ -46,7 +46,7 @@ public class SplashActivity extends Activity {
 				startActivity( new Intent(getApplicationContext(), DashboardActivity.class));
 				finish();
 			}
-		}, 1500);
+		}, 3000);
 		
 	}
     

@@ -5,23 +5,28 @@ import ac.cr.ecci.ucr.droidmusic.R;
 import ac.cr.ecci.ucr.droidmusic.R.layout;
 import ac.cr.ecci.ucr.droidmusic.R.menu;
 import android.os.Bundle;
+import android.os.Build.VERSION;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
-public class Generos extends ActionBarActivity {
+public class ListasActivity extends ListaCancionesActivity {
 
-    @Override
+    @SuppressLint("NewApi")
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_generos);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.activity_listas);
+        if(VERSION.SDK_INT > 10){
+        	getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_generos, menu);
+        getMenuInflater().inflate(R.menu.activity_listas, menu);
         return true;
     }
 
