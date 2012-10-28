@@ -1,6 +1,5 @@
 package ac.cr.ecci.ucr.droidmusic.service;
 
-import ac.cr.ecci.ucr.droidmusic.ui.DroidMusicService;
 
 
 public class DroidMusicServiceFactory {
@@ -8,7 +7,7 @@ public class DroidMusicServiceFactory {
 		
 	public static DroidMusicService getInstance(){
 		if(service == null)	{
-			service = new SimpleDroidMusicService();			
+			service = new ItunesMusicService();			
 		}
 		return service;
 	}

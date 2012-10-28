@@ -1,4 +1,4 @@
-package ac.cr.ecci.ucr.droidmusic.ui;
+package ac.cr.ecci.ucr.droidmusic.service;
 
 import java.util.List;
 

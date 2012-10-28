@@ -1,24 +1,26 @@
 package ac.cr.ecci.ucr.droidmusic.ui;
 
 import java.lang.ref.WeakReference;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.j256.ormlite.dao.Dao;
+
 import ac.cr.ecci.ucr.droidmusic.R;
 import ac.cr.ecci.ucr.droidmusic.actionbar.ActionBarActivity;
-import ac.cr.ecci.ucr.droidmusic.actionbar.ActionBarHelper;
 import ac.cr.ecci.ucr.droidmusic.bo.Song;
-
+import ac.cr.ecci.ucr.droidmusic.data.DBHelper;
 import ac.cr.ecci.ucr.droidmusic.service.DroidMusicServiceFactory;
-import ac.cr.ecci.ucr.droidmusic.service.SimpleDroidMusicService;
-import android.os.AsyncTask;
-import android.os.Build.VERSION;
-import android.os.Bundle;
+import ac.cr.ecci.ucr.droidmusic.service.ItunesMusicService;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Build.VERSION;
+import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -26,7 +28,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -47,6 +48,7 @@ public class ListaCancionesActivity extends ActionBarActivity {
 	static int mEstadoFooter;
 	TaskSongs mTask;
 	RetainedInstances mInstance;
+	EditText mTextoBuscar;
 
 	public static final int PROGRESS_DIALOG = 1;
 
@@ -76,8 +78,8 @@ public class ListaCancionesActivity extends ActionBarActivity {
 		}
 		mButtonBuscar = (ImageButton) findViewById(R.id.boton_buscar);
 		mListCanciones = (ListView) findViewById(R.id.layout_ListaCanciones);
-		EditText textoBuscar = (EditText) findViewById(R.id.texto_busqueda);
-		textoBuscar.setOnEditorActionListener(new OnEditorActionListener() {
+		mTextoBuscar = (EditText) findViewById(R.id.texto_busqueda);
+		mTextoBuscar.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
@@ -120,7 +122,8 @@ public class ListaCancionesActivity extends ActionBarActivity {
 			}
 		});
 
-		if (aux != null) {
+		if (aux != null) { // para ver si estaba o no el footer luego del cambio
+							// de orientacion
 			this.revisarFooter(aux.getEstadoFooter());
 		}
 	}
@@ -180,14 +183,13 @@ public class ListaCancionesActivity extends ActionBarActivity {
 		MusicAdapter adapter = (MusicAdapter) ((HeaderViewListAdapter) mListCanciones
 				.getAdapter()).getWrappedAdapter();
 		adapter.clear();
+
 		mTask = new TaskSongs(this);
 		mTask.setFirst(true); // es el primer pedido de busqueda
-		if (((EditText) findViewById(R.id.texto_busqueda)).getText().toString()
-				.contentEquals("")) { // si no tiene nada no devuelve resultados
-			mTask.setEmpty(true);
-			mEstadoFooter = RetainedInstances.FOOTERINVIS;
-		} else {
-			mTask.setEmpty(false);
+		if (!(mTextoBuscar.getText().toString().contentEquals(""))) {
+			// si no tiene nada no se llama al servico
+			Log.d("presssearch", "entra " + mTextoBuscar.getText().toString());
+			mTask.setSearchCriteria(mTextoBuscar.getText().toString());
 		}
 		mTask.execute();
 	}
@@ -259,8 +261,8 @@ public class ListaCancionesActivity extends ActionBarActivity {
 				holder = (SongViewHolder) convertView.getTag();
 			}
 
-			holder.artist.setText(song.getArtist());
-			holder.title.setText(song.getSongName());
+			holder.artist.setText(song.getArtistName());
+			holder.title.setText(song.getTrackName());
 
 			return convertView;
 		}
@@ -337,7 +339,7 @@ public class ListaCancionesActivity extends ActionBarActivity {
 	}
 
 	private static class TaskSongs extends AsyncTask<Void, Void, List<Song>> {
-		boolean empty = false; // para que no devuelva ningun resultado
+		String searchCriteria = ""; // para que no devuelva ningun resultado
 		boolean first = true; // para que haga la primer busqueda
 		ProgressDialog progress;
 		boolean finish = false;
@@ -348,8 +350,8 @@ public class ListaCancionesActivity extends ActionBarActivity {
 			attach(activity);
 		}
 
-		public void setEmpty(boolean empty) {
-			this.empty = empty;
+		public void setSearchCriteria(String searchCriteria) {
+			this.searchCriteria = searchCriteria;
 		}
 
 		public void setFirst(boolean first) {
@@ -369,29 +371,41 @@ public class ListaCancionesActivity extends ActionBarActivity {
 
 		protected List<Song> doInBackground(Void... params) {
 			List<Song> songs = new ArrayList<Song>();
-
-			if (empty == false) {
-				SimpleDroidMusicService service = (SimpleDroidMusicService) DroidMusicServiceFactory
-						.getInstance();
-				if (first) {
-					service.setCurrent(0);
+			ItunesMusicService service = (ItunesMusicService) DroidMusicServiceFactory
+					.getInstance();
+			boolean noError = true;
+			if (first) {
+				if (!service.newSearch(searchCriteria)) {
+					noError = false;
 				}
+			}
+			
+			if(noError){				
 				try {
 					songs = service.getSongs(10);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				finish = service.isFinished();
-			} else {
-				finish = true;
 			}
+			
 			return songs;
 		}
 
 		@Override
 		protected void onPostExecute(List<Song> result) {
 			if (ctx != null && ctx.get() != null) {
+				DBHelper helper = DBHelper.getHelper( ((Activity)ctx.get()).getApplicationContext());
+				Dao<Song,Integer> dao;
+				try {
+					dao = helper.getDao();
+					dao.createOrUpdate(result.get(0));
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				Log.d("cant","" + result.size());
 				MusicAdapter adapter = (MusicAdapter) ((HeaderViewListAdapter) mListCanciones
 						.getAdapter()).getWrappedAdapter();
 				adapter.addList(result);
