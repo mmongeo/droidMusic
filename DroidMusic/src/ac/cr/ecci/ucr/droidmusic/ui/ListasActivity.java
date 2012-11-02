@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
-public class ListasActivity extends ListaCancionesActivity {
+public class ListasActivity extends ActionBarActivity {
 
     @SuppressLint("NewApi")
 	@Override

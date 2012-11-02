@@ -10,61 +10,58 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="75dp"
 	    android:background="#000000" >
-	    <ImageButton 
+
+	    <ImageButton
 	        android:id="@+id/item_play"
-	        android:layout_centerVertical="true"
-	        android:src="@drawable/play"
-	        android:layout_height="60dp"
 	        android:layout_width="50dp"
-	       	android:padding="5dp"
-	       	android:background="#1F1F1F"
-	       	
-	       	/>
-	    <ImageView 
+	        android:layout_height="60dp"
+	        android:layout_centerVertical="true"
+	        android:background="#1F1F1F"
+	        android:padding="5dp"
+	        android:src="@drawable/play" />
+
+	    <ImageView
 	        android:id="@+id/item_audifono"
+	        android:layout_width="50dp"
+	        android:layout_height="60dp"
 	        android:layout_centerVertical="true"
 	        android:layout_toRightOf="@id/item_play"
-	        android:src="@drawable/headphones"
-	        android:layout_height="60dp"
-	        android:layout_width="50dp"
-	       	android:padding="5dp"
-	       	android:background="#1F1F1F"/>
-
-	    <TextView
-	        android:id="@+id/item_Cancion"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="10dp"
-	        android:layout_marginTop="15dp"
-	        android:layout_toRightOf="@+id/item_audifono"
-	        android:text="Song"
-	        android:textColor="#FFFFFF"
-	        android:textAppearance="?android:attr/textAppearanceMedium" />
+	        android:background="#1F1F1F"
+	        android:padding="5dp"
+	        android:src="@drawable/headphones" />
 
 	    <TextView
 	        android:id="@+id/item_Artista"
-	        android:layout_width="wrap_content"
+	        android:layout_width="160dp"
 	        android:layout_height="wrap_content"
 	        android:layout_alignBottom="@+id/item_audifono"
-	        android:layout_below="@id/item_Cancion"
 	        android:layout_centerHorizontal="true"
 	        android:layout_marginLeft="10dp"
 	        android:layout_toRightOf="@+id/item_audifono"
 	        android:text="Artist"
-	        android:textColor="#FFFFFF"
-	        android:textAppearance="?android:attr/textAppearanceSmall" />
-	    
-	    <ImageButton 
-	        android:src="@drawable/selectorbuttonfavorites"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textColor="#FFFFFF" />
+
+	    <ImageButton
 	        android:id="@+id/item_estrella"
-	        android:layout_alignParentRight="true"
-	       	android:layout_centerInParent="true"
-	        android:layout_height="50dp"
 	        android:layout_width="50dp"
-	       	android:padding="5dp"
-	        />
-	    
-	    
+	        android:layout_height="50dp"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerInParent="true"
+	        android:padding="5dp"
+	        android:src="@drawable/star_off" />
+
+	    <TextView
+	        android:id="@+id/item_Cancion"
+	        android:layout_width="160dp"
+	        android:layout_height="wrap_content"
+	        android:layout_above="@+id/item_Artista"
+	        android:layout_alignLeft="@+id/item_Artista"
+	        android:layout_alignTop="@+id/item_audifono"
+	        android:text="Song"
+	        android:textAppearance="?android:attr/textAppearanceMedium"
+	        android:textColor="#FFFFFF" />
+
 	</RelativeLayout>
 
 </LinearLayout>

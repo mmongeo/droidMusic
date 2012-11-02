@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -27,6 +28,9 @@ public class SplashActivity extends Activity {
     	TextView titulo = (TextView) findViewById(R.id.texto_centro);
         TextView textoExplicativo = (TextView) findViewById(R.id.texto_espere);
     	mAnimation = AnimationUtils.loadAnimation(this,R.anim.movetocenter);
+    	if(mAnimation != null){
+    		Log.d("da","fail");
+    	}
         textoExplicativo.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fadein));
     	titulo.startAnimation(mAnimation);
     }

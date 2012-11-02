@@ -5,10 +5,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.j256.ormlite.dao.Dao;
-
 import ac.cr.ecci.ucr.droidmusic.R;
 import ac.cr.ecci.ucr.droidmusic.actionbar.ActionBarActivity;
+import ac.cr.ecci.ucr.droidmusic.bo.ItunesServiceConectionException;
+import ac.cr.ecci.ucr.droidmusic.bo.MusicAdapter;
+import ac.cr.ecci.ucr.droidmusic.bo.RetainedInstances;
 import ac.cr.ecci.ucr.droidmusic.bo.Song;
 import ac.cr.ecci.ucr.droidmusic.data.DBHelper;
 import ac.cr.ecci.ucr.droidmusic.service.DroidMusicServiceFactory;
@@ -28,16 +29,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
+
+import com.j256.ormlite.dao.Dao;
 
 public class ListaCancionesActivity extends ActionBarActivity {
 
@@ -91,13 +92,6 @@ public class ListaCancionesActivity extends ActionBarActivity {
 			}
 		});
 
-		mFooterView = ((LayoutInflater) this
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
-				R.layout.item_boton_mas, null, false);
-		mListCanciones.addFooterView(mFooterView);
-		mButtonVerMas = (Button) findViewById(R.id.boton_mas);
-		mFooterView.setVisibility(View.INVISIBLE);
-
 		if (aux != null) {
 			mEstadoFooter = aux.getEstadoFooter(); // si se crea solo con el
 													// controstructor por
@@ -105,14 +99,18 @@ public class ListaCancionesActivity extends ActionBarActivity {
 													// cero que es que esta
 													// invisible
 		}
-
-		mListCanciones.setAdapter(new MusicAdapter(this, canciones));
+		mFooterView = ((LayoutInflater) this
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
+				R.layout.item_boton_mas, null, false);
+		mListCanciones.addFooterView(mFooterView);
+		mListCanciones.setAdapter(new MusicAdapter(this, canciones, false));
 		mButtonBuscar.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				pressSearchButton();
 			}
 		});
+		mButtonVerMas = (Button) findViewById(R.id.boton_mas);
 		mButtonVerMas.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -124,7 +122,8 @@ public class ListaCancionesActivity extends ActionBarActivity {
 
 		if (aux != null) { // para ver si estaba o no el footer luego del cambio
 							// de orientacion
-			this.revisarFooter(aux.getEstadoFooter());
+			RetainedInstances.revisarFooter(aux.getEstadoFooter(), mFooterView,
+					mButtonVerMas);
 		}
 	}
 
@@ -200,145 +199,7 @@ public class ListaCancionesActivity extends ActionBarActivity {
 		return true;
 	}
 
-	private static class MusicAdapter extends BaseAdapter {
-		List<Song> songs;
-		LayoutInflater inflater;
-
-		public MusicAdapter(Context context, List<Song> songs) {
-			this.songs = songs;
-			inflater = (LayoutInflater) context
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			if (this.songs != null && !this.songs.isEmpty()) {
-				notifyDataSetChanged();
-
-			}
-		}
-
-		public void addList(List<Song> songs) {
-			this.songs.addAll(songs);
-			notifyDataSetChanged();
-		}
-
-		public List<Song> getSongs() {
-			return songs;
-		}
-
-		public void clear() {
-			this.songs.clear();
-			notifyDataSetChanged();
-		}
-
-		public int getCount() {
-			return songs.size();
-		}
-
-		public Object getItem(int position) {
-			return songs.get(position);
-		}
-
-		public long getItemId(int position) {
-			return position;
-		}
-
-		public View getView(int position, View convertView, ViewGroup parent) {
-			Song song = (Song) getItem(position);
-
-			SongViewHolder holder = null;
-			if (convertView == null) {
-
-				convertView = inflater.inflate(R.layout.item_cancion, parent,
-						false);
-				holder = new SongViewHolder();
-
-				convertView.setTag(holder);
-
-				holder.artist = (TextView) convertView
-						.findViewById(R.id.item_Artista);
-				holder.title = (TextView) convertView
-						.findViewById(R.id.item_Cancion);
-
-			} else {
-				holder = (SongViewHolder) convertView.getTag();
-			}
-
-			holder.artist.setText(song.getArtistName());
-			holder.title.setText(song.getTrackName());
-
-			return convertView;
-		}
-	}
-
-	private static class RetainedInstances {
-		private TaskSongs task;
-		private List<Song> songs;
-		private int estadoFooter = 0;
-		public static final int FOOTERINVIS = 0;
-		public static final int FOOTERVIS = 1;
-		public static final int FOOTERNOHAY = 2;
-		public static final int FOOTERVERMAS = 3;
-
-		public RetainedInstances() {
-
-		}
-
-		public TaskSongs getTask() {
-			return task;
-		}
-
-		public void setTask(TaskSongs task) {
-			this.task = task;
-		}
-
-		public List<Song> getSongs() {
-			return songs;
-		}
-
-		public void setSongs(List<Song> songs) {
-			this.songs = songs;
-		}
-
-		public int getEstadoFooter() {
-			return estadoFooter;
-		}
-
-		public void setEstadoFooter(int estadoFooter) {
-			this.estadoFooter = estadoFooter;
-		}
-
-	}
-
-	private void revisarFooter(int modo) {
-		Log.d("modo", "" + modo);
-		switch (modo) {
-		case RetainedInstances.FOOTERINVIS:
-			mFooterView.setVisibility(View.INVISIBLE);
-			break;
-		case RetainedInstances.FOOTERVIS:
-			mFooterView.setVisibility(View.INVISIBLE);
-			break;
-		case RetainedInstances.FOOTERVERMAS:
-			mFooterView.setVisibility(View.VISIBLE);
-			mButtonVerMas.setEnabled(true);
-			mButtonVerMas.setText("Ver mas resultados");
-			break;
-		case RetainedInstances.FOOTERNOHAY:
-			mFooterView.setVisibility(View.VISIBLE);
-			mButtonVerMas.setEnabled(false);
-			mButtonVerMas.setText("No hay mas resultados");
-			Log.d("lol", "ver mas");
-			break;
-
-		}
-
-	}
-
-	private static class SongViewHolder {
-		public TextView title;
-		public TextView artist;
-		public ImageView photoThumbnail;
-	}
-
-	private static class TaskSongs extends AsyncTask<Void, Void, List<Song>> {
+	private static class TaskSongs extends AsyncTask<Void, String, List<Song>> {
 		String searchCriteria = ""; // para que no devuelva ningun resultado
 		boolean first = true; // para que haga la primer busqueda
 		ProgressDialog progress;
@@ -373,14 +234,19 @@ public class ListaCancionesActivity extends ActionBarActivity {
 			List<Song> songs = new ArrayList<Song>();
 			ItunesMusicService service = (ItunesMusicService) DroidMusicServiceFactory
 					.getInstance();
-			boolean noError = true;
+			boolean error = false;
 			if (first) {
-				if (!service.newSearch(searchCriteria)) {
-					noError = false;
+				try {
+					if (!service.newSearch(searchCriteria)) {
+						error = true;
+					}
+				} catch (ItunesServiceConectionException e) {
+					this.publishProgress(e.getMessage());		
+					error = true;
 				}
 			}
-			
-			if(noError){				
+
+			if (!error) {
 				try {
 					songs = service.getSongs(10);
 				} catch (Exception e) {
@@ -388,35 +254,30 @@ public class ListaCancionesActivity extends ActionBarActivity {
 					e.printStackTrace();
 				}
 			}
-			
+
 			return songs;
+		}
+
+		
+		
+		@Override
+		protected void onProgressUpdate(String... values) {
+			(Toast.makeText( ((Activity) ctx.get()).getApplicationContext() ,values[0] , Toast.LENGTH_SHORT)).show();
+			super.onProgressUpdate(values);
 		}
 
 		@Override
 		protected void onPostExecute(List<Song> result) {
 			if (ctx != null && ctx.get() != null) {
-				DBHelper helper = DBHelper.getHelper( ((Activity)ctx.get()).getApplicationContext());
-				Dao<Song,Integer> dao;
-				try {
-					dao = helper.getDao();
-					dao.createOrUpdate(result.get(0));
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				Log.d("cant","" + result.size());
-				MusicAdapter adapter = (MusicAdapter) ((HeaderViewListAdapter) mListCanciones
-						.getAdapter()).getWrappedAdapter();
-				adapter.addList(result);
-				Activity activity = (Activity) ctx.get();
-				activity.dismissDialog(PROGRESS_DIALOG);
-				if (finish) {
+				if (result.isEmpty()) {
 					mButtonVerMas.setEnabled(false);
 					mButtonVerMas.setText("No hay mas resultados");
 					mEstadoFooter = RetainedInstances.FOOTERNOHAY;
 
 				} else {
+					MusicAdapter adapter = (MusicAdapter) ((HeaderViewListAdapter) mListCanciones
+							.getAdapter()).getWrappedAdapter();
+					adapter.addList(result);
 					mButtonVerMas.setEnabled(true);
 					mButtonVerMas.setText("Ver mas resultados"); // podrmButtonVerMasia
 																	// ser mas
@@ -427,6 +288,9 @@ public class ListaCancionesActivity extends ActionBarActivity {
 																	// reusltados
 					mEstadoFooter = RetainedInstances.FOOTERVERMAS;
 				}
+				Activity activity = (Activity) ctx.get();
+				activity.dismissDialog(PROGRESS_DIALOG);
+				
 				mButtonVerMas.setVisibility(View.VISIBLE);
 			}
 		}

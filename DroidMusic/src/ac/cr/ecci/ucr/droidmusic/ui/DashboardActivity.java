@@ -56,7 +56,7 @@ public class DashboardActivity extends ActionBarActivity {
 			public void onClick(View v) {
 				Button button = (Button) v;
 				startActivity(new Intent(getApplicationContext(),
-						GenerosActivity.class));
+						FavoritosActivity.class));
 
 			}
 		});

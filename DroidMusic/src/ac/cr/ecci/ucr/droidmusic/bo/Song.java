@@ -6,13 +6,21 @@ import com.j256.ormlite.table.DatabaseTable;
 // 
 @DatabaseTable(tableName =  "Song")
 public class Song {
-	
+	public static final int KEY_POSITION = 100;
 	@DatabaseField
 	String wrapperType;
 	@DatabaseField
 	String kind;
 	@DatabaseField
 	int artistId;
+	public String getArtworkUrl30() {
+		return artworkUrl30;
+	}
+
+	public void setArtworkUrl30(String artworkUrl30) {
+		this.artworkUrl30 = artworkUrl30;
+	}
+
 	@DatabaseField
 	int collectionId;
 	@DatabaseField (id = true)

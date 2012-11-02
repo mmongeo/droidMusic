@@ -22,10 +22,12 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import ac.cr.ecci.ucr.droidmusic.bo.ItunesServiceConectionException;
 import ac.cr.ecci.ucr.droidmusic.bo.ItunesSongRequest;
 import ac.cr.ecci.ucr.droidmusic.bo.Song;
 import ac.cr.ecci.ucr.droidmusic.service.HTTPClientFactory.ClientType;
 import android.content.Context;
+import android.content.res.Resources.Theme;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.JsonReader;
@@ -38,15 +40,15 @@ public class ItunesMusicService extends DroidMusicService {
 	public static final int NADA = 2;
 	public static final int ERROR = 0;
 
-//	private static final String ARTIST = "artistName";
-//	private static final String TRACKNAME = "trackName";
-//	private static final String TRACKID = "trackId";
-//	private static final String TRACKART = "artworkUrl60";
-//	private static final String RESULTSCOUNT = "resultCount";
-//	private static final String RESULTS = "results";
+	// private static final String ARTIST = "artistName";
+	// private static final String TRACKNAME = "trackName";
+	// private static final String TRACKID = "trackId";
+	// private static final String TRACKART = "artworkUrl60";
+	// private static final String RESULTSCOUNT = "resultCount";
+	// private static final String RESULTS = "results";
 
 	private int estado = -1;
-//	private JSONArray query = null;
+	// private JSONArray query = null;
 	int counter = 0;
 	int max;
 	private Gson gson;
@@ -66,7 +68,8 @@ public class ItunesMusicService extends DroidMusicService {
 
 	private final String itunesURL = "https://itunes.apple.com/search?";
 
-	public boolean newSearch(String criteria) {
+	public boolean newSearch(String criteria)
+			throws ItunesServiceConectionException {
 		counter = 0;
 		if (criteria != "") { // si criteria no lleva nada ni siquiera busca
 			try {
@@ -79,18 +82,14 @@ public class ItunesMusicService extends DroidMusicService {
 						in, "UTF-8")), ItunesSongRequest.class);
 				max = data.getResultCount();
 				return true;
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ItunesServiceConectionException();
 			}
-		} else {
-			estado = NADA;
-			data = null;
-//			query = null;
 		}
+		estado = NADA;
+		data = null;
+		// query = null;
+
 		return false;
 
 	}
@@ -98,24 +97,22 @@ public class ItunesMusicService extends DroidMusicService {
 	/* Antes de esto es bueno revisar si esta conectado a internet */
 	@Override
 	public List<Song> getSongs(int quantity) {
-		List<Song> songs = null;
+		List<Song> songs = new ArrayList<Song>();
 		int localCounter = 0;
-	
+
 		if (data != null && counter < max) {
-				songs = new ArrayList<Song>();
-				while (localCounter < quantity && counter < max) {
-					songs.add(data.getSong(counter));
-//					temp = query.getJSONObject(counter);
-//					Song aux = new Song(temp
-//							.getString(ItunesMusicService.TRACKNAME), temp
-//							.getString(ItunesMusicService.ARTIST), temp
-//							.getString(ItunesMusicService.TRACKART), temp
-//							.getString(ItunesMusicService.TRACKID));
-//					songs.add(aux);
-					Log.d("num", "" + localCounter );
-					++counter;
-					++localCounter;
-				}
+			while (localCounter < quantity && counter < max) {
+				songs.add(data.getSong(counter));
+				// temp = query.getJSONObject(counter);
+				// Song aux = new Song(temp
+				// .getString(ItunesMusicService.TRACKNAME), temp
+				// .getString(ItunesMusicService.ARTIST), temp
+				// .getString(ItunesMusicService.TRACKART), temp
+				// .getString(ItunesMusicService.TRACKID));
+				// songs.add(aux);
+				++counter;
+				++localCounter;
+			}
 		}
 		return songs;
 	}
